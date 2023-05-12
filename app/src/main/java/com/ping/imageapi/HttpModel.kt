@@ -10,9 +10,9 @@ import java.io.IOException
 
 object HttpModel {
 
-    fun sendGet(url:String):String{
+    private fun getApi(url: String): String {
         Log.d("TAG", "sendGet $url ")
-        val arrayList = ArrayList<String>()
+        var res = ""
         val client = OkHttpClient().newBuilder().build()
         val request = Request.Builder()
             .url(url)
@@ -20,28 +20,28 @@ object HttpModel {
         val call = client.newCall(request)
         call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                arrayList.add("UnknownHostException")
+                res = "Fail"
             }
 
             override fun onResponse(call: Call, response: Response) {
-                arrayList.add(response.body!!.string())
+                res = response.body!!.string()
             }
         })//respond
-        while (arrayList.isEmpty()) {
+        while (res.isEmpty()) {
             SystemClock.sleep(1)
-            if (arrayList.isNotEmpty()) break
+            if (res.isNotEmpty()) break
         }
         return try {
-            arrayList[0]
+            res
         } catch (e: Exception) {
             e.toString()
         }
     }
 
-    suspend fun getImg():String {
+    suspend fun getImg(): String {
         return coroutineScope {
             async(Dispatchers.IO) {
-                return@async sendGet(
+                return@async getApi(
                     "https://jsonplaceholder.typicode.com/photos"
                 )
             }.await()
