@@ -15,8 +15,8 @@ class RecyclerViewAdapter(var context: Context) :
     private var list: List<ImageInfo> = ArrayList()
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvTitle: TextView = view.findViewById(R.id.textView_Title)
-        val tvPrice: TextView = view.findViewById(R.id.textView_Price)
+        val tvID: TextView = view.findViewById(R.id.tvID)
+        val tvTitle: TextView = view.findViewById(R.id.tvTitle)
         val igImage: ImageView = view.findViewById(R.id.imageView)
     }
 
@@ -40,7 +40,7 @@ class RecyclerViewAdapter(var context: Context) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.tvTitle.text = list[position].title
-        holder.tvPrice.text = list[position].id
+        holder.tvID.text = list[position].id
         Glide.with(context).load(list[position].thumbnailUrl).fitCenter().into(holder.igImage)
     }
 }
