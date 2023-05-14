@@ -7,8 +7,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-class ImageActivity: ComponentActivity() {
+class ImageActivity : ComponentActivity(), CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = job
+    private val job = Job()
     private lateinit var adapter: RecyclerViewAdapter
     private val viewModel by viewModels<ImageViewModel>()
 
@@ -22,12 +32,11 @@ class ImageActivity: ComponentActivity() {
         val tvMore: TextView = findViewById(R.id.tvMore)
         tvMore.setOnClickListener {
             adapter.loadMoreData()
-
         }
 
-
-
-        viewModel.getAPI()
+        launch(Dispatchers.Main) {
+            viewModel.getAPI()
+        }
 
         viewModel.imageInfoList.observe(this) {
             if (it.size > 0) {

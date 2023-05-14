@@ -6,17 +6,19 @@ import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 
 class ImageViewModel: ViewModel() {
 
     val imageInfoList: MutableLiveData<ArrayList<ImageInfo>> = MutableLiveData()
 
-    fun getAPI(){
-        GlobalScope.launch {
-            runBlocking {
+    suspend fun getAPI(){
+        coroutineScope {
+            withContext(Dispatchers.IO) {
                 val getImg = HttpModel.getImg()
                 val list = ArrayList<ImageInfo>()
                 if (getImg != "Fail") {

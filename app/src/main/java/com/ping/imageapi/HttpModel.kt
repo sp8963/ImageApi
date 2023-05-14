@@ -5,6 +5,7 @@ import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import okhttp3.*
 import java.io.IOException
 
@@ -40,11 +41,9 @@ object HttpModel {
 
     suspend fun getImg(): String {
         return coroutineScope {
-            async(Dispatchers.IO) {
-                return@async getApi(
-                    "https://jsonplaceholder.typicode.com/photos"
-                )
-            }.await()
+            withContext(Dispatchers.IO) {
+                 getApi("https://jsonplaceholder.typicode.com/photos")
+            }
         }
     }
 
