@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -29,10 +30,15 @@ class ImageActivity : ComponentActivity(), CoroutineScope {
         recyclerView.layoutManager = GridLayoutManager(this, 4)
         adapter = RecyclerViewAdapter(this, 100)
         recyclerView.adapter = adapter
-        val tvMore: TextView = findViewById(R.id.tvMore)
-        tvMore.setOnClickListener {
-            adapter.loadMoreData()
-        }
+
+        recyclerView.addOnScrollListener(object : OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!recyclerView.canScrollVertically(1)) {
+                    adapter.loadMoreData();
+                }
+            }
+        })
 
         launch(Dispatchers.Main) {
             viewModel.getAPI()
