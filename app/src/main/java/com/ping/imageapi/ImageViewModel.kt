@@ -2,6 +2,7 @@ package com.ping.imageapi
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -17,7 +18,7 @@ class ImageViewModel: ViewModel() {
     val imageInfoList: MutableLiveData<ArrayList<ImageInfo>> = MutableLiveData()
 
     suspend fun getAPI(){
-        coroutineScope {
+        viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 val getImg = HttpModel.getImg()
                 val list = ArrayList<ImageInfo>()

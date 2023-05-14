@@ -8,6 +8,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import okhttp3.*
 import java.io.IOException
+import java.lang.Exception
 
 object HttpModel {
 
@@ -15,35 +16,19 @@ object HttpModel {
         Log.d("TAG", "sendGet $url ")
         var res = ""
         val client = OkHttpClient().newBuilder().build()
-        val request = Request.Builder()
-            .url(url)
-            .build()
-        val call = client.newCall(request)
-        call.enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                res = "Fail"
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                res = response.body!!.string()
-            }
-        })//respond
-        while (res.isEmpty()) {
-            SystemClock.sleep(1)
-            if (res.isNotEmpty()) break
+        try {
+            val request = Request.Builder().url(url).build()
+            val response = client.newCall(request).execute()
+            res = response.body!!.string()
+        } catch (err: Exception) {
+            return "Fail"
         }
-        return try {
-            res
-        } catch (e: Exception) {
-            e.toString()
-        }
+        return res
     }
 
     suspend fun getImg(): String {
         return coroutineScope {
-            withContext(Dispatchers.IO) {
-                 getApi("https://jsonplaceholder.typicode.com/photos")
-            }
+            getApi("https://jsonplaceholder.typicode.com/photos")
         }
     }
 

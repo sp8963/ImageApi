@@ -61,6 +61,6 @@ class RecyclerViewAdapter(var context: Context, private val batchSize: Int) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.tvTitle.text = list[position].title
         holder.tvID.text = list[position].id
-        Glide.with(context).load(list[position].thumbnailUrl).fitCenter().into(holder.igImage)
+        Glide.with(holder.itemView.context).load(list[position].thumbnailUrl).fitCenter().into(holder.igImage)
     }
 }
