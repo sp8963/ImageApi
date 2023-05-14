@@ -23,8 +23,11 @@ class ImageActivity: ComponentActivity() {
         viewModel.getAPI()
 
         viewModel.imageInfoList.observe(this) {
-            runOnUiThread {
+            if (it.size > 0) {
                 adapter.setData(it)
+                Toast.makeText(this,"Data Set", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this,"No data", Toast.LENGTH_SHORT).show()
             }
         }
 
