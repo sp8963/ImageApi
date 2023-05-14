@@ -8,6 +8,7 @@
 
     <Button
         android:id="@+id/button"
+        android:text="進入圖片列表"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

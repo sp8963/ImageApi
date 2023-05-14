@@ -7,22 +7,38 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class RecyclerViewAdapter(var context: Context) :
+class RecyclerViewAdapter(var context: Context, private val batchSize: Int) :
     RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
     private var list: List<ImageInfo> = ArrayList()
-
+    private var batchData = mutableListOf<ImageInfo>()
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvID: TextView = view.findViewById(R.id.tvID)
         val tvTitle: TextView = view.findViewById(R.id.tvTitle)
         val igImage: ImageView = view.findViewById(R.id.imageView)
     }
 
+    private fun loadNextBatch() {
+        if (batchData.size == list.size) {
+            Toast.makeText(context, "Data no more", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val startIndex = batchData.size
+        val endIndex = minOf(startIndex + batchSize, list.size)
+        batchData.addAll(list.subList(startIndex, endIndex))
+        notifyDataSetChanged()
+        Toast.makeText(context, "Data load more", Toast.LENGTH_SHORT).show()
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     fun setData(list: List<ImageInfo>) {
         this.list = list
+        val startIndex = batchData.size
+        val endIndex = minOf(startIndex + batchSize, list.size)
+        batchData.addAll(list.subList(startIndex, endIndex))
         notifyDataSetChanged()
     }
 
@@ -35,7 +51,11 @@ class RecyclerViewAdapter(var context: Context) :
 
 
     override fun getItemCount(): Int {
-        return list.size
+        return batchData.size
+    }
+
+    fun loadMoreData() {
+        loadNextBatch()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

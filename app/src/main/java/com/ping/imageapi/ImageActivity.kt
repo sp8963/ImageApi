@@ -1,6 +1,7 @@
 package com.ping.imageapi
 
 import android.os.Bundle
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
@@ -16,8 +17,14 @@ class ImageActivity: ComponentActivity() {
         setContentView(R.layout.activity_image)
         val recyclerView: RecyclerView = findViewById(R.id.recyclerview_display)
         recyclerView.layoutManager = GridLayoutManager(this, 4)
-        adapter = RecyclerViewAdapter(this)
+        adapter = RecyclerViewAdapter(this, 100)
         recyclerView.adapter = adapter
+        val tvMore: TextView = findViewById(R.id.tvMore)
+        tvMore.setOnClickListener {
+            adapter.loadMoreData()
+
+        }
+
 
 
         viewModel.getAPI()
