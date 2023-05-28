@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.noahliu.coroutinewithcrypto", appContext.packageName)
+        assertEquals("com.ping.imageapi", appContext.packageName)
     }
 }
