@@ -1,12 +1,11 @@
 package com.ping.imageapi
 
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.json.JSONArray
 
 class ImageViewModel : ViewModel() {
@@ -31,6 +30,26 @@ class ImageViewModel : ViewModel() {
                 imageInfoList.postValue(list)
             }
         })
+    }
 
+    fun setAdapter(it : ArrayList<ImageInfo>, recyclerView:RecyclerView){
+        if (it.size > 0) {
+            recyclerView.layoutManager = GridLayoutManager(recyclerView.context, 4)
+            val adapter = RecyclerViewAdapter(recyclerView.context, 100)
+            recyclerView.adapter = adapter
+
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (!recyclerView.canScrollVertically(1)) {
+                        adapter.loadMoreData();
+                    }
+                }
+            })
+            adapter.setData(it)
+            Toast.makeText(recyclerView.context,"Data Set", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(recyclerView.context,"No data", Toast.LENGTH_SHORT).show()
+        }
     }
 }

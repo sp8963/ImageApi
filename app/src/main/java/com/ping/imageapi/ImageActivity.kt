@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,7 +23,6 @@ class ImageActivity : ComponentActivity(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = job
     private val job = Job()
-    private lateinit var adapter: RecyclerViewAdapter
     private val viewModel by viewModels<ImageViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,26 +34,9 @@ class ImageActivity : ComponentActivity(), CoroutineScope {
         }
 
         viewModel.imageInfoList.observe(this) {
+            val recyclerView: RecyclerView = findViewById(R.id.recyclerview_display)
             launch(Dispatchers.Main) {
-                if (it.size > 0) {
-                    val recyclerView: RecyclerView = findViewById(R.id.recyclerview_display)
-                    recyclerView.layoutManager = GridLayoutManager(this@ImageActivity, 4)
-                    adapter = RecyclerViewAdapter(this@ImageActivity, 100)
-                    recyclerView.adapter = adapter
-
-                    recyclerView.addOnScrollListener(object : OnScrollListener(){
-                        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                            super.onScrolled(recyclerView, dx, dy)
-                            if (!recyclerView.canScrollVertically(1)) {
-                                adapter.loadMoreData();
-                            }
-                        }
-                    })
-                    adapter.setData(it)
-                    Toast.makeText(this@ImageActivity,"Data Set", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this@ImageActivity,"No data", Toast.LENGTH_SHORT).show()
-                }
+                viewModel.setAdapter(it, recyclerView)
             }
 
         }
